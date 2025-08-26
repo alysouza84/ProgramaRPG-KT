@@ -1,4 +1,6 @@
-package cs.up.edu.br
+package cs.up.edu.br.rpg.app
+
+import cs.up.edu.br.rpg.personagem.model.GeradorDeAtributos
 
 /**
  * Função principal usada para testar a geração de atributos.

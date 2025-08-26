@@ -1,4 +1,4 @@
-package cs.up.edu.br // Defini o pacote base para organizar o projeto.
+package cs.up.edu.br.rpg.personagem.model // Defini o pacote base para organizar o projeto.
 
 import kotlin.random.Random
 
