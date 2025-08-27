@@ -1,31 +1,60 @@
 package cs.up.edu.br.rpg.app
-
-import cs.up.edu.br.rpg.personagem.model.GeradorDeAtributos
-
-/**
- * Função principal usada para testar a geração de atributos.
- * Ela demonstra a chamada de cada um dos três métodos de criação de personagem:
- * Clássico, Aventureiro e Heróico, e imprime o resultado de cada um.
- */
+import cs.up.edu.br.rpg.personagem.model.*
 
 fun main() {
-    println("Bem-vindo ao Criador de Personagens RPG!")
-    println("----------------------------------------")
+    println("### INICIANDO TESTE COMPLETO DE CRIAÇÃO DE PERSONAGEM ###\n")
 
-    println("1. Gerando atributos pelo método CLÁSSICO (distribuição fixa):")
-    val atributosClassicos = GeradorDeAtributos.gerarClassico()
-    println("--> Resultado: $atributosClassicos")
-    println() // Adiciona uma linha em branco para melhor visualização
+    // 1. Gerar um conjunto de atributos usando o método Heróico
+    println("--- Passo 1: Gerando Atributos ---")
+    val poolDeAtributos = GeradorDeAtributos.gerarPoolDeAtributosHeroico()
+    println("Valores rolados: $poolDeAtributos\n")
 
-    println("2. Gerando POOL de atributos pelo método AVENTUREIRO (3d6 para o jogador distribuir):")
-    val poolAventureiro = GeradorDeAtributos.gerarPoolDeAtributosAventureiro()
-    println("--> Seus 6 valores são: $poolAventureiro")
-    println("    Agora o jogador pode distribuir esses valores entre os 6 atributos.")
-    println()
+    // 2. Simular a distribuição desses atributos
+    println("--- Passo 2: Distribuindo Atributos ---")
+    val atributosFinais = Atributos(
+        forca = poolDeAtributos[0], // 1º valor (o maior) em Força
+        destreza = poolDeAtributos[2],
+        constituicao = poolDeAtributos[1],
+        inteligencia = poolDeAtributos[5], // último valor (o menor) em Inteligência
+        sabedoria = poolDeAtributos[3],
+        carisma = poolDeAtributos[4]
+    )
+    println("Atributos distribuídos!\n")
 
-    println("3. Gerando POOL de atributos pelo método HERÓICO (4d6 drop 1 para o jogador distribuir):")
-    val poolHeroico = GeradorDeAtributos.gerarPoolDeAtributosHeroico()
-    println("--> Seus 6 valores são: $poolHeroico")
-    println("    Agora o jogador pode distribuir esses valores entre os 6 atributos.")
-    println()
+    // 3. Escolher Raça e Classe
+    val racaEscolhida: Raca = Anao()
+    val classeEscolhida: ClasseDePersonagem = Guerreiro()
+
+    // 4. Verificar se a combinação é válida
+    println("--- Passo 3: Verificando Requisitos ---")
+    if (!classeEscolhida.verificarRequisitos(atributosFinais)) {
+        println("ERRO: Os atributos não são suficientes para a classe ${classeEscolhida.nome}. Teste encerrado.")
+        return // Encerra o programa se os requisitos не forem cumpridos
+    }
+    println("Requisitos para ${classeEscolhida.nome} atendidos!\n")
+
+    // 5. Criar a instância final do Personagem
+    println("--- Passo 4: Criando o Personagem ---")
+    val personagem = Personagem(
+        nome = "Borin, o Quebra-Montanha",
+        raca = racaEscolhida,
+        classe = classeEscolhida,
+        atributos = atributosFinais,
+        nivel = 1,
+        alinhamento = "Leal e Bom"
+    )
+    println("Personagem '${personagem.nome}' criado!\n")
+
+    // 6. Criar e adicionar equipamentos ao inventário
+    println("--- Passo 5: Equipando Itens ---")
+    val machadoDeBatalha = Arma(nome = "Machado de Batalha", dano = "1d8", carga = 7)
+    val cotaDeTalos = Armadura(nome = "Cota de Talos", bonusCA = 5, carga = 20)
+    personagem.inventario.add(machadoDeBatalha)
+    personagem.inventario.add(cotaDeTalos)
+    println("Itens adicionados ao inventário!\n")
+
+
+    // 7. Apresentar a ficha final do personagem
+    println("--- Passo 6: Exibindo a Ficha Final ---")
+    personagem.apresentar()
 }

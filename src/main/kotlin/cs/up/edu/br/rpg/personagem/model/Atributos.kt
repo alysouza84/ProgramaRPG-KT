@@ -3,30 +3,53 @@ package cs.up.edu.br.rpg.personagem.model // Defini o pacote base para organizar
 import kotlin.random.Random
 
 /**
- * Utilizei uma 'data class' para representar os Atributos, pois ela é perfeita
- * para armazenar dados. O Kotlin gera automaticamente métodos úteis como
+ * Utilizei uma 'data class' para representar os Atributos.
+ * O Kotlin gera automaticamente métodos úteis como
  * toString(), equals() e hashCode(), o que deixa o código mais limpo.
- * Garanti que todos os 6 atributos clássicos estão presentes.
+ * Garante que todos os 6 atributos clássicos estão presentes.
  */
 data class Atributos(
     val forca: Int,
     val destreza: Int,
     val constituicao: Int,
-    val inteligencia: Int, // Adicionado o atributo que faltava.
+    val inteligencia: Int,
     val sabedoria: Int,
     val carisma: Int
 )
+{
+    val modificadorForca: Int = calcularModificador(forca)
+    val modificadorDestreza: Int = calcularModificador(destreza)
+    val modificadorConstituicao: Int = calcularModificador(constituicao)
+    val modificadorInteligencia: Int = calcularModificador(inteligencia)
+    val modificadorSabedoria: Int = calcularModificador(sabedoria)
+    val modificadorCarisma: Int = calcularModificador(carisma)
 
+    private fun calcularModificador(valorAtributo: Int): Int {
+        return when (valorAtributo) {
+            1 -> -5
+            in 2..3 -> -4
+            in 4..5 -> -3
+            in 6..7 -> -2
+            in 8..9 -> -1
+            in 10..11 -> 0
+            in 12..13 -> 1
+            in 14..15 -> 2
+            in 16..17 -> 3
+            in 18..19 -> 4
+            else -> 5 // Para 20 ou mais
+        }
+    }
+}
 /**
- * Criei um 'object' para o GeradorDeAtributos, pois ele não precisa guardar estado
- * e só precisamos de uma única instância dele em todo o programa (padrão Singleton).
+ * Criado um 'object' para o GeradorDeAtributos, pois ele não precisa guardar estado
+ * e só precisa de uma única instância dele em todo o programa (padrão Singleton).
  * Isso permite chamar os métodos diretamente, como GeradorDeAtributos.gerarClassico().
  */
 object GeradorDeAtributos {
-
-    // Função privada para simular a rolagem de um dado de 6 lados (d6).
+    /**
+     * Função privada para simular a rolagem de um dado de 6 lados (d6).
+     * */
     private fun rolarD6() = Random.nextInt(1, 7)
-
     /**
      * Lógica base para o método Clássico e Aventureiro.
      * Implementa a regra de rolar 3 dados de 6 lados e somá-los (3d6).
@@ -34,7 +57,6 @@ object GeradorDeAtributos {
     private fun gerarAtributo3d6(): Int {
         return rolarD6() + rolarD6() + rolarD6()
     }
-
     /**
      * Lógica base para o método Heróico.
      * Implementa a regra de rolar 4 dados de 6 lados e descartar o menor resultado.
@@ -61,7 +83,6 @@ object GeradorDeAtributos {
             carisma = gerarAtributo3d6()
         )
     }
-
     /**
      * Implementa o método Aventureiro: gera um "pool" de 6 valores,
      * cada um sendo o resultado de uma rolagem de 3d6.
@@ -71,7 +92,6 @@ object GeradorDeAtributos {
     fun gerarPoolDeAtributosAventureiro(): List<Int> {
         return List(6) { gerarAtributo3d6() }
     }
-
     /**
      * Implementa o método Heróico: gera um "pool" de 6 valores,
      * cada um sendo o resultado de 4d6 descartando o menor.
