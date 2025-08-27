@@ -8,6 +8,7 @@ import kotlin.random.Random
  * toString(), equals() e hashCode(), o que deixa o código mais limpo.
  * Garante que todos os 6 atributos clássicos estão presentes.
  */
+
 data class Atributos(
     val forca: Int,
     val destreza: Int,
